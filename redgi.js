@@ -6,6 +6,7 @@ var audioT = document.getElementById("music");
 const sndbtns = document.querySelector("#sndbtns");
 const icon = document.querySelector("#sndbtns > i");
 
+var firstRun = true;
 var currentLocationImage = "location0.jpg";
 var a = rand(11, 12);
 var b = rand(13, 14);
@@ -17,17 +18,17 @@ var f = rand(88, 89);
 let state = {};
 
 sndbtns.addEventListener("click", () => {
-if (audioT.paused) {
-    audioT.volume = 0.2;
-    audioT.loop = true;
-    audioT.play();
-    icon.classList.remove('fa-volume-mute');
-    icon.classList.add('fa-volume-up');    
-} else {
-    audioT.pause();
-    icon.classList.remove('fa-volume-up');
-    icon.classList.add('fa-volume-mute');    
-}
+    if (audioT.paused) {
+        audioT.volume = 0.2;
+        audioT.loop = true;
+        audioT.play();
+        icon.classList.remove("fa-volume-mute");
+        icon.classList.add("fa-volume-up");
+    } else {
+        audioT.pause();
+        icon.classList.remove("fa-volume-up");
+        icon.classList.add("fa-volume-mute");
+    }
 });
 
 function addLocationImage() {
@@ -43,14 +44,17 @@ function addLocationImage() {
 }
 
 async function startGame() {
-    while (cardsStack.firstChild) {
-        cardsStack.removeChild(cardsStack.firstChild);
+    if (!firstRun) {
+        while (cardsStack.firstChild) {
+            cardsStack.removeChild(cardsStack.firstChild);
+        }
+        while (bgDiv.firstChild) {
+            bgDiv.removeChild(bgDiv.firstChild);
+        }
+        currentLocationImage = "location0.jpg";
+        addLocationImage();
+        firstRun = false;
     }
-    while (bgDiv.firstChild) {
-        bgDiv.removeChild(bgDiv.firstChild);
-    }
-    currentLocationImage = "location0.jpg";
-    addLocationImage()
     state = {};
     await showTextNode(1);
 }
@@ -72,9 +76,9 @@ async function showTextNode(textNodeIndex) {
 
     if (currentLocationImage != textNode.image) {
         currentLocationImage = textNode.image;
-        addLocationImage()
+        addLocationImage();
     }
-    
+
     player.src = textNode.player_image;
 
     for (const option of textNode.options) {
